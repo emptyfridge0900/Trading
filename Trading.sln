@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Backend", "Trading.Backend\Trading.Backend.csproj", "{BEC4DEA1-8BE0-F4DE-62A0-650E8F9E668C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.WPFClient", "Trading.WPFClient\Trading.WPFClient.csproj", "{6900B996-3C80-92A4-1157-9411AE7ACE95}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BEC4DEA1-8BE0-F4DE-62A0-650E8F9E668C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC4DEA1-8BE0-F4DE-62A0-650E8F9E668C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC4DEA1-8BE0-F4DE-62A0-650E8F9E668C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC4DEA1-8BE0-F4DE-62A0-650E8F9E668C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6900B996-3C80-92A4-1157-9411AE7ACE95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6900B996-3C80-92A4-1157-9411AE7ACE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6900B996-3C80-92A4-1157-9411AE7ACE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6900B996-3C80-92A4-1157-9411AE7ACE95}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E9BB7C31-9B1E-4868-A316-EF4DC4138545}
+	EndGlobalSection
+EndGlobal
