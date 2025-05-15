@@ -1,4 +1,7 @@
 
+using Trading.Backend.Hubs;
+using Trading.Backend.Services;
+
 namespace Trading.Backend
 {
     public class Program
@@ -12,7 +15,9 @@ namespace Trading.Backend
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            builder.Services.AddSignalR();
+            builder.Services.AddSingleton<TickerService>();
+            builder.Services.AddHostedService<PriceUpdateService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -28,6 +33,7 @@ namespace Trading.Backend
 
             app.MapControllers();
 
+            app.MapHub<TradingHub>("/trading");
             app.Run();
         }
     }
