@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Backend", "Trading.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.WPFClient", "Trading.WPFClient\Trading.WPFClient.csproj", "{6900B996-3C80-92A4-1157-9411AE7ACE95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Common", "Trading.Common\Trading.Common.csproj", "{7B569BDB-9EA3-48D9-8906-8ACBE9A65F0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6900B996-3C80-92A4-1157-9411AE7ACE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6900B996-3C80-92A4-1157-9411AE7ACE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6900B996-3C80-92A4-1157-9411AE7ACE95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B569BDB-9EA3-48D9-8906-8ACBE9A65F0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B569BDB-9EA3-48D9-8906-8ACBE9A65F0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B569BDB-9EA3-48D9-8906-8ACBE9A65F0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B569BDB-9EA3-48D9-8906-8ACBE9A65F0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
