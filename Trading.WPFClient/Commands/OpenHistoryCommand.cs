@@ -26,14 +26,14 @@ namespace Trading.WPFClient.Commands
 
         public void Execute(object? parameter)
         {
-            var win = new OrderBookWindow()
-            {
-                DataContext = new SubViewModel(new OrderBookViewModel())
-            };
-            win.Owner = _mainWindow;
+            //var win = new OrderBookWindow()
+            //{
+            //    DataContext = new SubViewModel(new OrderBookViewModel(_UIViewModel.Ticker.Symbol))
+            //};
+            //win.Owner = _mainWindow;
 
 
-            win.Show();
+            //win.Show();
 
         }
     }

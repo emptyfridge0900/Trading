@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Trading.WPFClient.ViewModels;
 
 namespace Trading.WPFClient
 {
@@ -19,6 +20,12 @@ namespace Trading.WPFClient
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void ContentControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var context = (MainViewModel)DataContext;
+            ((UIViewModel)context.CurrentViewModel).Connect();
         }
     }
 }

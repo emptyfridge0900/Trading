@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Trading.WPFClient.ViewModels;
 
 namespace Trading.WPFClient
 {
@@ -22,6 +23,12 @@ namespace Trading.WPFClient
         public OrderBookWindow()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        { 
+            var context = (SubViewModel)DataContext;
+            ((OrderBookViewModel)context.CurrentViewModel).Connect();
         }
     }
 }

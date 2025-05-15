@@ -30,7 +30,7 @@ namespace Trading.WPFClient.Commands
         {
             var win = new OrderBookWindow()
             {
-                DataContext = new SubViewModel(new OrderBookViewModel())
+                DataContext = new SubViewModel(new OrderBookViewModel(_UIViewModel.Ticker.Symbol, _UIViewModel.Tickers.ToList()))
             };
             win.Owner = _mainWindow;
 

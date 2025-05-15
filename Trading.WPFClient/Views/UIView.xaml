@@ -36,8 +36,8 @@
             <ListView ItemsSource="{Binding Tickers}"  SelectedValue="{Binding Ticker}">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Ticker"  DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Header="Last Price"  DisplayMemberBinding="{Binding LastPrice}"/>
+                        <GridViewColumn Header="Ticker"  DisplayMemberBinding="{Binding Symbol}"/>
+                        <GridViewColumn Header="Last Price"  DisplayMemberBinding="{Binding Price}"/>
                         <GridViewColumn Header="Changes"  DisplayMemberBinding="{Binding Changes}"/>
                         <GridViewColumn Header="Change %"  DisplayMemberBinding="{Binding ChangePercent}"/>
                     </GridView>

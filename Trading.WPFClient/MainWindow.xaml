@@ -8,7 +8,7 @@
         xmlns:views="clr-namespace:Trading.WPFClient.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <ContentControl Content="{Binding CurrentViewModel}">
+    <ContentControl Content="{Binding CurrentViewModel}" Loaded="ContentControl_Loaded">
         <ContentControl.Resources>
             <DataTemplate DataType="{x:Type viewModels:UIViewModel}">
                 <views:UIView></views:UIView>
