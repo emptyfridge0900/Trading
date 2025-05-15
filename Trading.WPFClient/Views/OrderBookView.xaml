@@ -17,7 +17,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Name : " Grid.Row="0" Grid.Column="0"/>
-            <ComboBox ItemsSource="{Binding Tickers}" SelectedValue="{Binding TickerName}" Grid.Column="1">
+            <ComboBox ItemsSource="{Binding Tickers}" SelectedValue="{Binding TickerName}" Grid.Column="1" Margin="0,0,600,0">
                 
             </ComboBox>
         </Grid>

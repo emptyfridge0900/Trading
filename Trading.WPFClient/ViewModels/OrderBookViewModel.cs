@@ -67,6 +67,11 @@ namespace Trading.WPFClient.ViewModels
             await _hubConnection.StartAsync();
             await _hubConnection.InvokeAsync("JoinGroup", TickerName);
         }
+        public async void Disconnect()
+        {
+            await _hubConnection.InvokeAsync("UnjoinGroup", TickerName);
+            await _hubConnection.StopAsync();
+        }
         private async void SelectTicker(string tickerName)
         {
             await _hubConnection.SendAsync("JoinGroup", tickerName);

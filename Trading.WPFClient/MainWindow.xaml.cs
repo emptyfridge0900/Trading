@@ -22,10 +22,18 @@ namespace Trading.WPFClient
             InitializeComponent();
         }
 
-        private void ContentControl_Loaded(object sender, RoutedEventArgs e)
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var context = (MainViewModel)DataContext;
             ((UIViewModel)context.CurrentViewModel).Connect();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            var context = (MainViewModel)DataContext;
+            ((UIViewModel)context.CurrentViewModel).Disconnect();
         }
     }
 }

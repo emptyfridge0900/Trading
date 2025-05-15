@@ -30,5 +30,11 @@ namespace Trading.WPFClient
             var context = (SubViewModel)DataContext;
             ((OrderBookViewModel)context.CurrentViewModel).Connect();
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            var context = (SubViewModel)DataContext;
+            ((OrderBookViewModel)context.CurrentViewModel).Disconnect();
+        }
     }
 }

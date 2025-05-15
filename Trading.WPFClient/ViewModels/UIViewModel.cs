@@ -58,6 +58,10 @@ namespace Trading.WPFClient.ViewModels
             await _hubConnection.StartAsync();
             await _hubConnection.InvokeAsync("SendTickerLit");
         }
+        public async void Disconnect()
+        {
+            await _hubConnection.StopAsync();
+        }
         public ICommand OpenHistory { get; set; }
         public ICommand OpenOrder { get; set; }
 
