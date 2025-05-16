@@ -11,8 +11,12 @@ namespace Trading.Backend.Hubs
         {
             _tickerService = tickerService;
         }
-        
 
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            Console.WriteLine($"{Context.ConnectionId} disconnected.");
+            await base.OnDisconnectedAsync(exception);
+        }
 
         public async Task SendTickerLit()
             => await Clients.Caller.ReceiveTickerList(_tickerService.GetTickers());
