@@ -33,7 +33,7 @@ namespace Trading.Backend
 
             app.MapControllers();
 
-            app.MapHub<TradingHub>("/trading");
+            app.MapHub<TickerHub>("/trading");
             app.Run();
         }
     }

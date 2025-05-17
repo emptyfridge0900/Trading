@@ -4,10 +4,10 @@ using Trading.Common.Models;
 
 namespace Trading.Backend.Hubs
 {
-    public class TradingHub : Hub<IWpfClient>
+    public class TickerHub : Hub<IWpfClient>
     {
         private readonly TickerService _tickerService;
-        public TradingHub(TickerService tickerService) 
+        public TickerHub(TickerService tickerService) 
         {
             _tickerService = tickerService;
         }

@@ -5,13 +5,13 @@ namespace Trading.Backend.Services
 {
     public class PriceUpdateService : BackgroundService
     {
-        private readonly IHubContext<TradingHub,IWpfClient> _hubContext;
+        private readonly IHubContext<TickerHub,IWpfClient> _hubContext;
         private readonly TickerService _tickerService;
         private readonly ILogger<PriceUpdateService> _logger;
         private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(2);
 
         public PriceUpdateService(
-            IHubContext<TradingHub,IWpfClient> hubContext,
+            IHubContext<TickerHub,IWpfClient> hubContext,
             TickerService tickerService,
             ILogger<PriceUpdateService> logger)
         {
