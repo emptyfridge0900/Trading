@@ -10,7 +10,7 @@ using Trading.Common.Models;
 namespace Trading.Backend.Hubs
 {
     [Authorize(JwtBearerDefaults.AuthenticationScheme)]
-    public class TradingHub : Hub
+    public class TradingHub : Hub<ITrade>
     {
         private ITradingService _service;
         private readonly IServiceScopeFactory _scopeFactory;
@@ -25,7 +25,7 @@ namespace Trading.Backend.Hubs
         {
             _logger.LogInformation("Context.UserIdentifier:" + Context.UserIdentifier);
             var records = _service.GetTradingRecords(Context.UserIdentifier);
-            await Clients.User(Context.UserIdentifier).SendAsync("ReceiveRecords", records);
+            await Clients.User(Context.UserIdentifier).ReceiveRecords(records);
         }
 
         public async Task Order(string symbol, float price, int quantity)
