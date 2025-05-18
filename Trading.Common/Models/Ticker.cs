@@ -2,6 +2,7 @@
 {
     public class Ticker
     {
+        public int Id { get; set; } 
         private float _price;
         public string Symbol { get; init; }
         public float Price 
