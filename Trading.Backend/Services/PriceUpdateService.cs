@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Trading.Backend.Hubs;
+using Trading.Backend.Interfaces;
 
 namespace Trading.Backend.Services
 {
     public class PriceUpdateService : BackgroundService
     {
         private readonly IHubContext<TickerHub,IWpfClient> _hubContext;
-        private readonly TickerService _tickerService;
+        private readonly ITickerService _tickerService;
         private readonly ILogger<PriceUpdateService> _logger;
         private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(2);
 
         public PriceUpdateService(
             IHubContext<TickerHub,IWpfClient> hubContext,
-            TickerService tickerService,
+            ITickerService tickerService,
             ILogger<PriceUpdateService> logger)
         {
             _hubContext = hubContext;
@@ -32,7 +33,7 @@ namespace Trading.Backend.Services
                     foreach (var ticker in tickers)
                     {
                         await _hubContext.Clients.Group(ticker.Symbol).ReceiveTickerUpdate(_tickerService.GetOrders(ticker.Symbol),ct);
-                        _logger.LogInformation($"Sent ticker {ticker.Symbol}");
+                        //_logger.LogInformation($"Sent ticker {ticker.Symbol}");
                     }
                     
                     

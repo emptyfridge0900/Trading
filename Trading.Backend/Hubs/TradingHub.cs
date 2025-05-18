@@ -1,0 +1,46 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Trading.Backend.Interfaces;
+using Trading.Backend.Persistance;
+using Trading.Backend.Services;
+using Trading.Common.Models;
+
+namespace Trading.Backend.Hubs
+{
+    [Authorize(JwtBearerDefaults.AuthenticationScheme)]
+    public class TradingHub : Hub
+    {
+        private ITradingService _service;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ILogger<TradingHub> _logger;
+        public TradingHub(ITradingService service, IServiceScopeFactory factory, ILogger<TradingHub> logger)
+        {
+            _service = service;
+            _scopeFactory = factory; 
+            _logger = logger;
+        }
+        public async Task SendTradingHistory()
+        {
+            _logger.LogInformation("Context.UserIdentifier:" + Context.UserIdentifier);
+            var records = _service.GetTradingRecords(Context.UserIdentifier);
+            await Clients.User(Context.UserIdentifier).SendAsync("ReceiveRecords", records);
+        }
+
+        public async Task Order(string symbol, float price, int quantity)
+        {
+            _logger.LogInformation("Context.UserIdentifier:" + Context.UserIdentifier);
+            var record = new TradeRecord
+            {
+                Time = DateTime.UtcNow,
+                Side = "",
+                Ticker = symbol,
+                Price = price,
+                Quantity = quantity,
+                UserId = Context.UserIdentifier
+            };
+            _service.AddRecord(Context.UserIdentifier, record);
+        }
+    }
+}

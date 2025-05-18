@@ -1,6 +1,14 @@
 
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Trading.Backend.Hubs;
+using Trading.Backend.Interfaces;
+using Trading.Backend.Persistance;
 using Trading.Backend.Services;
+using Trading.Common.Models;
 
 namespace Trading.Backend
 {
@@ -16,12 +24,58 @@ namespace Trading.Backend
                 options.UseInMemoryDatabase("inmemory");
             });
 
+            builder.Services.AddSignalR();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+                {
+                    policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireClaim(ClaimTypes.NameIdentifier);
+                });
+            });
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = "WhoCreateToken",
+                    ValidAudience = "WhoIsThisTokenIntendedFor",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("YourWeakSecretKeyIsLongEnoughToGenerateToken")),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateActor = false,
+                    ValidateLifetime = true,
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var headers = context.Request.Headers;
+
+                        // If the request is for trading hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/trading")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-            builder.Services.AddSignalR();
-            builder.Services.AddSingleton<TickerService>();
-            builder.Services.AddHostedService<PriceUpdateService>();
+            
+            builder.Services.AddSingleton<ITickerService,TickerService>();
+            builder.Services.AddSingleton<ITradingService, TradingService>();
+            builder.Services.AddHostedService<PriceUpdateService>(); 
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
             {
@@ -55,7 +109,8 @@ namespace Trading.Backend
 
             app.MapControllers();
 
-            app.MapHub<TickerHub>("/trading");
+            app.MapHub<TickerHub>("/ticker");
+            app.MapHub<TradingHub>("/trading");
             app.Run();
         }
     }

@@ -9,12 +9,12 @@ using Trading.WPFClient.ViewModels;
 
 namespace Trading.WPFClient.Commands
 {
-    public class OpendHistoryCommand : ICommand
+    public class OpenHistoryCommand : ICommand
     {
         public event EventHandler? CanExecuteChanged;
         private UIViewModel _UIViewModel;
         private Window _mainWindow;
-        public OpendHistoryCommand(UIViewModel viewModel, Window mainWindow)
+        public OpenHistoryCommand(UIViewModel viewModel, Window mainWindow)
         {
             _UIViewModel = viewModel;
             _mainWindow = mainWindow;
@@ -26,15 +26,13 @@ namespace Trading.WPFClient.Commands
 
         public void Execute(object? parameter)
         {
-            //var win = new OrderBookWindow()
-            //{
-            //    DataContext = new SubViewModel(new OrderBookViewModel(_UIViewModel.Ticker.Symbol))
-            //};
-            //win.Owner = _mainWindow;
+            var win = new HistoryWindow()
+            {
+                DataContext = new SubViewModel(new HistoryViewModel(_UIViewModel.Jwt))
+            };
+            win.Owner = _mainWindow;
 
-
-            //win.Show();
-
+            win.Show();
         }
     }
 }

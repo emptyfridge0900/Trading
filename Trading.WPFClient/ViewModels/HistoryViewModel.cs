@@ -1,98 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
-using Trading.WPFClient.Commands;
 using Trading.Common.Models;
-using Trading.WPFClient.Services;
-using Trading.WPFClient.Views;
-using Microsoft.Extensions.Logging;
-using System.Net.WebSockets;
-using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.SignalR;
-using System.Diagnostics;
 
 namespace Trading.WPFClient.ViewModels
 {
-    public class UIViewModel:ViewModelBase
+    public class HistoryViewModel : ViewModelBase
     {
         private readonly HubConnection _hubConnection;
-        private readonly ILogger<UIViewModel> _logger;
-        private Window _mainWindow;
-        private ObservableCollection<Ticker> _tickers;
-        public ObservableCollection<Ticker> Tickers 
+        private ObservableCollection<TradeRecord> _records;
+        public ObservableCollection<TradeRecord> Records 
         { 
-            get { return _tickers; }
+            get { return _records; } 
             set
             {
-                _tickers = value;
-                OnPropertyChanged();
-            } 
-        }
-
-        private Ticker _ticker;
-        public Ticker Ticker
-        {
-            get { return _ticker; }
-            set { 
-                _ticker = value; 
+                _records = value;
                 OnPropertyChanged();
             }
         }
-        static class NativeMethods
-        {
-            [DllImport("kernel32.dll", SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            public static extern bool AllocConsole();
-        }
 
-        public string Jwt;
-
-        public UIViewModel(Window mainWinow)
+        private string _jwt;
+        public HistoryViewModel(string jwt)
         {
+            _jwt = jwt;
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5053/ticker")
+                .WithUrl($"http://localhost:5053/trading?access_token={_jwt}")
+                //, options =>
+                //{
+                //    //options.SkipNegotiation = true;
+                //    //options.Transports = HttpTransportType.WebSockets;
+                //    options.AccessTokenProvider = () => Task.FromResult(_jwt);
+                //})
                 .WithServerTimeout(TimeSpan.FromSeconds(30))// 30 sec by default
                 .WithKeepAliveInterval(TimeSpan.FromSeconds(15))// 15 sec by default
                 .WithAutomaticReconnect()
                 .Build();
 
-            NativeMethods.AllocConsole();
-
-             _hubConnection.On("ReceiveTickerList", (List<Ticker> x) => {
-                 try
-                 {
-                    Tickers = new ObservableCollection<Ticker>(x);
-                 }
-                 catch (Exception ex)
-                 {
-                 }
-                
+            _hubConnection.On("ReceiveRecords", (List<TradeRecord> records) =>
+            {
+                Records = new ObservableCollection<TradeRecord>(records);
             });
-
-            _hubConnection.On("ReceiveJwt", (string jwt) => Jwt = jwt);
 
             _hubConnection.Reconnecting += (ex) =>
             {
                 Console.WriteLine("Reconnectiong...");
                 Console.WriteLine(_hubConnection.State);
-        
+
                 return Task.CompletedTask;
             };
 
-            _hubConnection.Reconnected += async (msg) =>
+            _hubConnection.Reconnected += async (f) =>
             {
                 Console.WriteLine("Successfully reconnected!");
                 Console.WriteLine(_hubConnection.State);
-                await _hubConnection.InvokeAsync("SendTickerLit");
+                //await _hubConnection.InvokeAsync("JoinGroup", TickerName);
             };
 
-            //try reconnect 4 time
             _hubConnection.Closed += async (ex) =>
             {
                 Console.WriteLine("Closed event");
@@ -108,20 +77,13 @@ namespace Trading.WPFClient.ViewModels
                     await ConnectWithRetryAsync(_hubConnection);
                 }
             };
-
-            _mainWindow = mainWinow;
-
-            OpenHistory = new OpenHistoryCommand(this,_mainWindow);
-            OpenOrder = new OpenOrderBookCommand(this,_mainWindow);
         }
         public async void Connect()
         {
             try
             {
-                //await _hubConnection.StartAsync();
                 await ConnectWithRetryAsync(_hubConnection);
-                await _hubConnection.InvokeAsync("SendTickerLit");
-                await _hubConnection.InvokeAsync("Login");
+                await _hubConnection.InvokeAsync("SendTradingHistory");
 
             }
             catch (Exception ex)
@@ -132,7 +94,7 @@ namespace Trading.WPFClient.ViewModels
 
         //WithAutomaticReconnect() won't configure the HubConnection to retry initial start failures,
         //so start failures need to be handled manually
-        public static async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token=default)
+        public static async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token = default)
         {
             while (true)
             {
@@ -147,7 +109,7 @@ namespace Trading.WPFClient.ViewModels
                 {
                     return false;
                 }
-                catch
+                catch(Exception ex) 
                 {
                     // Failed to connect, trying again in 5000 ms.
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
@@ -164,10 +126,5 @@ namespace Trading.WPFClient.ViewModels
                 Console.WriteLine("Stop request sent");
             }
         }
-        public ICommand OpenHistory { get; set; }
-        public ICommand OpenOrder { get; set; }
-
-
     }
-
 }

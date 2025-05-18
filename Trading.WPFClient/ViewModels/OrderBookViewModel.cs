@@ -52,7 +52,7 @@ namespace Trading.WPFClient.ViewModels
         public OrderBookViewModel(string symbol, List<Ticker> tickers)
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5053/trading")
+                .WithUrl("http://localhost:5053/ticker")
                 .WithServerTimeout(TimeSpan.FromSeconds(30))// 30 sec by default
                 .WithKeepAliveInterval(TimeSpan.FromSeconds(15))// 15 sec by default
                 .WithAutomaticReconnect()
