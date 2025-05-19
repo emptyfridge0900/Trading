@@ -77,8 +77,6 @@
                         <GridView>
                             <GridViewColumn Header="Ticker" DisplayMemberBinding="{Binding Symbol}" Width="80"/>
                             <GridViewColumn Header="Last Price" DisplayMemberBinding="{Binding Price}" Width="80"/>
-                            <GridViewColumn Header="Changes" DisplayMemberBinding="{Binding Changes}" Width="80"/>
-                            <GridViewColumn Header="Change %" DisplayMemberBinding="{Binding ChangePercent}" Width="80"/>
                         </GridView>
                     </ListView.View>
                 </ListView>
