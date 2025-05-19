@@ -32,7 +32,13 @@
                     </Behaviors:Interaction.Triggers>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="_Exit"/>
+                <MenuItem Header="_Exit">
+                    <Behaviors:Interaction.Triggers>
+                        <Behaviors:EventTrigger EventName="Click">
+                            <Behaviors:InvokeCommandAction Command="{Binding CloseWindow}" />
+                        </Behaviors:EventTrigger>
+                    </Behaviors:Interaction.Triggers>
+                </MenuItem>
             </MenuItem>
         </Menu>
 

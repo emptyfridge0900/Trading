@@ -97,7 +97,6 @@ namespace Trading.WPFClient.ViewModels
                 .WithAutomaticReconnect()
                 .Build();
             
-            SubmitOrderCommand = new DefaultCommand(() => SubmitOrder(), null);
 
             NativeMethods.AllocConsole();
 
@@ -149,6 +148,9 @@ namespace Trading.WPFClient.ViewModels
 
             OpenHistory = new OpenHistoryCommand(this);
             OpenOrder = new OpenOrderBookCommand(this);
+            CloseWindow = new DefaultCommand(()=>Exit(),null);
+            SubmitOrderCommand = new DefaultCommand(() => SubmitOrder(), null);
+
         }
         public async Task Connect()
         {
@@ -222,11 +224,19 @@ namespace Trading.WPFClient.ViewModels
         }
         public ICommand OpenHistory { get; set; }
         public ICommand OpenOrder { get; set; }
+        public ICommand CloseWindow { get; set; }
         public ICommand SubmitOrderCommand { get; }
 
         private async Task SubmitOrder()
         {
             await _tradeHubConnection.InvokeAsync("Order", SelectedSide, Symbol, Price, Quantity);
+        }
+
+        private async Task Exit()
+        {
+            await Disconnect();
+            await TradeHubDisconnect();
+            Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
         }
 
 
