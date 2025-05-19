@@ -27,13 +27,20 @@ namespace Trading.WPFClient
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var context = (MainViewModel)DataContext;
-            ((UIViewModel)context.CurrentViewModel).Connect();
+            Task.WhenAll(new[] {
+                ((UIViewModel)context.CurrentViewModel).Connect(),
+                ((UIViewModel)context.CurrentViewModel).TradeHubConnect()
+            });
+
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
             var context = (MainViewModel)DataContext;
-            ((UIViewModel)context.CurrentViewModel).Disconnect();
+            Task.WhenAll(new[] {
+                ((UIViewModel)context.CurrentViewModel).Disconnect(),
+                ((UIViewModel)context.CurrentViewModel).TradeHubDisconnect()
+            });
         }
     }
 }

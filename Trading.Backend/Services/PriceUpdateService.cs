@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Trading.Backend.Hubs;
 using Trading.Backend.Interfaces;
+using Trading.Backend.Models;
 
 namespace Trading.Backend.Services
 {
@@ -19,6 +20,7 @@ namespace Trading.Backend.Services
             _hubContext = hubContext;
             _tickerService = tickerService;
             _logger = logger;
+
         }
 
         protected override async Task ExecuteAsync(CancellationToken ct)
@@ -28,7 +30,7 @@ namespace Trading.Backend.Services
             {
                 try
                 {
-                    _tickerService.UpdatePrices();
+                    //_tickerService.UpdatePrices();
                     var tickers= _tickerService.GetTickers();
                     foreach (var ticker in tickers)
                     {

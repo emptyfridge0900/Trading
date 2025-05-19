@@ -1,4 +1,9 @@
-﻿using Trading.Backend.Interfaces;
+﻿using System.Linq;
+using System.Reflection.Emit;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Trading.Backend.Interfaces;
+using Trading.Backend.Models;
 using Trading.Backend.Persistance;
 using Trading.Common.Models;
 
@@ -10,11 +15,13 @@ namespace Trading.Backend.Services
         private Random _random;
         private readonly IServiceScopeFactory scopeFactory;
         private readonly ILogger<TickerService> _logger;
-        public TickerService(IServiceScopeFactory factory, ILogger<TickerService> logger)
+        Store _store;
+        public TickerService(IServiceScopeFactory factory, ILogger<TickerService> logger, Store store)
         {
             scopeFactory = factory;
             _random = new Random();
             _logger = logger;
+            _store = store;
         }
 
         public List<Ticker> GetTickers()
@@ -31,21 +38,39 @@ namespace Trading.Backend.Services
             using var scope = scopeFactory.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
             var ticker = db.Tickers.FirstOrDefault(t => t.Symbol == tickerName);
-            for (int i = -NUM; i < NUM; i++)
+
+            if (_store.Stocks.ContainsKey(ticker.Symbol))
             {
-                var label = "Current";
-                if (i > 0)
+                var stock = _store.Stocks[ticker.Symbol];
+                foreach(var bid in stock.Bids.Values)
                 {
-                    label = "Bid " + Math.Abs(i);
+                    if(bid.Total>0)
+                        orders.Add(new Order { Name = "Bid", Price = bid.Price, Quantity = bid.Total });
+
                 }
-                else if(i < 0)
+
+                foreach(var ask in stock.Asks.Values)
                 {
-                    label = "Ask " + Math.Abs(i);
+                    if(ask.Total>0)
+                        orders.Add(new Order { Name = "Ask", Price = ask.Price, Quantity = ask.Total });
                 }
-                orders.Add(new Order { Name = label, Price = ticker.Price + i, Quantity = _random.Next(1,3000) });
             }
 
-            return orders;
+
+            //for (int i = -NUM; i < NUM; i++)
+            //{
+            //    var label = "Current";
+            //    if (i > 0)
+            //    {
+            //        label = "Bid " + Math.Abs(i);
+            //    }
+            //    else if(i < 0)
+            //    {
+            //        label = "Ask " + Math.Abs(i);
+            //    }
+            //    orders.Add(new Order { Name = label, Price = ticker.Price + i, Quantity = _random.Next(1,3000) });
+            //}
+            return orders.OrderByDescending(x => x.Price).ToList();
         }
         
 

@@ -3,9 +3,11 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 using Trading.Backend.Hubs;
 using Trading.Backend.Interfaces;
+using Trading.Backend.Models;
 using Trading.Backend.Persistance;
 using Trading.Backend.Services;
 using Trading.Common.Models;
@@ -72,10 +74,14 @@ namespace Trading.Backend
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-            
+
+            builder.Services.AddTransient<UserService>();
             builder.Services.AddSingleton<ITickerService,TickerService>();
             builder.Services.AddSingleton<ITradingService, TradingService>();
+            builder.Services.AddSingleton<Store>();
             builder.Services.AddHostedService<PriceUpdateService>(); 
+            builder.Services.AddHostedService<DataProducer>();
+
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
             {

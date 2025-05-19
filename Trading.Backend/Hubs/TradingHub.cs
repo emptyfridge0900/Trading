@@ -28,13 +28,23 @@ namespace Trading.Backend.Hubs
             await Clients.User(Context.UserIdentifier).ReceiveRecords(records);
         }
 
-        public async Task Order(string symbol, float price, int quantity)
+        public async Task Order(string side, string symbol, float price, int quantity)
         {
             _logger.LogInformation("Context.UserIdentifier:" + Context.UserIdentifier);
+
+            if(side == "Bid")
+            {
+                _service.Bid(Context.UserIdentifier, symbol, price, quantity);
+            }
+            else
+            {
+                _service.Ask(Context.UserIdentifier, symbol, price, quantity);
+            }
+
             var record = new TradeRecord
             {
                 Time = DateTime.UtcNow,
-                Side = "",
+                Side = side,
                 Ticker = symbol,
                 Price = price,
                 Quantity = quantity,

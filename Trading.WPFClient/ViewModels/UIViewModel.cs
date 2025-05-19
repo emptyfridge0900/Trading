@@ -9,22 +9,24 @@ using System.Windows.Input;
 using Microsoft.AspNetCore.SignalR.Client;
 using Trading.WPFClient.Commands;
 using Trading.Common.Models;
-using Trading.WPFClient.Services;
-using Trading.WPFClient.Views;
 using Microsoft.Extensions.Logging;
 using System.Net.WebSockets;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics;
+using Trading.WPFClient.Utility;
+
 
 namespace Trading.WPFClient.ViewModels
 {
     public class UIViewModel:ViewModelBase
     {
         private readonly HubConnection _hubConnection;
+        private readonly HubConnection _tradeHubConnection;
         private readonly ILogger<UIViewModel> _logger;
         private Window _mainWindow;
         private ObservableCollection<Ticker> _tickers;
+        
         public ObservableCollection<Ticker> Tickers 
         { 
             get { return _tickers; }
@@ -53,11 +55,34 @@ namespace Trading.WPFClient.ViewModels
 
         public string Jwt;
         public string Name;
+
+        private string _selectedSide;
+        public string SelectedSide
+        {
+            get => _selectedSide;
+            set
+            {
+                if (_selectedSide != value)
+                {
+                    _selectedSide = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
+        public List<string> Sides { get; } = new List<string> { "Bid", "Ask" };
+        public string Symbol { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+
+        
+
+
         public UIViewModel(Window mainWinow)
         {
             Name = JwtGen.GenerateName();
             Jwt = JwtGen.GenerateJwtToken(Name);
-            OrderPageView = new OrderViewModel(Jwt);
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5053/ticker")
                 .WithServerTimeout(TimeSpan.FromSeconds(30))// 30 sec by default
@@ -65,9 +90,18 @@ namespace Trading.WPFClient.ViewModels
                 .WithAutomaticReconnect()
                 .Build();
 
+            _tradeHubConnection = new HubConnectionBuilder()
+                .WithUrl($"http://localhost:5053/trading?access_token={Jwt}")
+                .WithServerTimeout(TimeSpan.FromSeconds(30))// 30 sec by default
+                .WithKeepAliveInterval(TimeSpan.FromSeconds(15))// 15 sec by default
+                .WithAutomaticReconnect()
+                .Build();
+            
+            SubmitOrderCommand = new DefaultCommand(() => SubmitOrder(), null);
+
             NativeMethods.AllocConsole();
 
-             _hubConnection.On("ReceiveTickerList", (List<Ticker> x) => {
+            _hubConnection.On("ReceiveTickerList", (List<Ticker> x) => {
                  try
                  {
                     Tickers = new ObservableCollection<Ticker>(x);
@@ -78,7 +112,6 @@ namespace Trading.WPFClient.ViewModels
                 
             });
 
-            _hubConnection.On("ReceiveJwt", (string jwt) => Jwt = jwt);
 
             _hubConnection.Reconnecting += (ex) =>
             {
@@ -117,16 +150,26 @@ namespace Trading.WPFClient.ViewModels
             OpenHistory = new OpenHistoryCommand(this,_mainWindow);
             OpenOrder = new OpenOrderBookCommand(this,_mainWindow);
         }
-        public async void Connect()
+        public async Task Connect()
         {
             try
             {
                 //await _hubConnection.StartAsync();
                 await ConnectWithRetryAsync(_hubConnection);
                 await _hubConnection.InvokeAsync("SendTickerLit");
-                
                 await _hubConnection.InvokeAsync("Login", Name);
-                
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"SignalR connection failed: {ex.Message}");
+            }
+        }
+        public async Task TradeHubConnect()
+        {
+            try
+            {
+                await ConnectWithRetryAsync(_tradeHubConnection);
 
             }
             catch (Exception ex)
@@ -161,7 +204,7 @@ namespace Trading.WPFClient.ViewModels
                 }
             }
         }
-        public async void Disconnect()
+        public async Task Disconnect()
         {
             if (_hubConnection.State != HubConnectionState.Disconnected)
             {
@@ -169,8 +212,22 @@ namespace Trading.WPFClient.ViewModels
                 Console.WriteLine("Stop request sent");
             }
         }
+        public async Task TradeHubDisconnect()
+        {
+            if (_tradeHubConnection.State != HubConnectionState.Disconnected)
+            {
+                await _tradeHubConnection.StopAsync();
+                Console.WriteLine("Stop request sent");
+            }
+        }
         public ICommand OpenHistory { get; set; }
         public ICommand OpenOrder { get; set; }
+        public ICommand SubmitOrderCommand { get; }
+
+        private async Task SubmitOrder()
+        {
+            await _tradeHubConnection.InvokeAsync("Order", SelectedSide, Symbol, Price, Quantity);
+        }
 
 
     }
