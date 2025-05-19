@@ -147,8 +147,8 @@ namespace Trading.WPFClient.ViewModels
 
             _mainWindow = mainWinow;
 
-            OpenHistory = new OpenHistoryCommand(this,_mainWindow);
-            OpenOrder = new OpenOrderBookCommand(this,_mainWindow);
+            OpenHistory = new OpenHistoryCommand(this);
+            OpenOrder = new OpenOrderBookCommand(this);
         }
         public async Task Connect()
         {

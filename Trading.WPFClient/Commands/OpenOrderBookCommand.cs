@@ -14,11 +14,9 @@ namespace Trading.WPFClient.Commands
     {
         public event EventHandler? CanExecuteChanged;
         private UIViewModel _UIViewModel;
-        private Window _mainWindow;
-        public OpenOrderBookCommand(UIViewModel viewModel,Window mainWindow)
+        public OpenOrderBookCommand(UIViewModel viewModel)
         {
             _UIViewModel = viewModel;
-            _mainWindow = mainWindow;
         }
 
         public bool CanExecute(object? parameter)
@@ -32,7 +30,6 @@ namespace Trading.WPFClient.Commands
             {
                 DataContext = new SubViewModel(new OrderBookViewModel(_UIViewModel.Ticker.Symbol, _UIViewModel.Tickers.ToList()))
             };
-            win.Owner = _mainWindow;
 
 
             win.Show();
