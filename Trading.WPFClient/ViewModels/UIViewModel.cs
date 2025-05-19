@@ -56,8 +56,8 @@ namespace Trading.WPFClient.ViewModels
         public string Jwt;
         public string Name;
 
-        private string _selectedSide;
-        public string SelectedSide
+        private string _selectedSide = "Bid";
+        public string SelectedSide 
         {
             get => _selectedSide;
             set
