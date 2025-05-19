@@ -32,7 +32,7 @@ namespace Trading.Backend.Services
             return db.Tickers.ToList();
         }
 
-        public List<Order> GetOrders(string tickerName)
+        public List<Order> GetOrders(string tickerName, int numOfRow)
         {
             List<Order> orders = new List<Order>();
             using var scope = scopeFactory.CreateScope();
@@ -44,32 +44,25 @@ namespace Trading.Backend.Services
                 var stock = _store.Stocks[ticker.Symbol];
                 foreach(var bid in stock.Bids.Values)
                 {
-                    if(bid.Total>0)
+                    if (bid.Total > 0)
+                    {
                         orders.Add(new Order { Name = "Bid", Price = bid.Price, Quantity = bid.Total });
-
+                        if (orders.Count == numOfRow)
+                            break;
+                    }
                 }
 
                 foreach(var ask in stock.Asks.Values)
                 {
                     if(ask.Total>0)
+                    {
                         orders.Add(new Order { Name = "Ask", Price = ask.Price, Quantity = ask.Total });
+                        if (orders.Count == 2* numOfRow)
+                            break;
+                    }
                 }
             }
 
-
-            //for (int i = -NUM; i < NUM; i++)
-            //{
-            //    var label = "Current";
-            //    if (i > 0)
-            //    {
-            //        label = "Bid " + Math.Abs(i);
-            //    }
-            //    else if(i < 0)
-            //    {
-            //        label = "Ask " + Math.Abs(i);
-            //    }
-            //    orders.Add(new Order { Name = label, Price = ticker.Price + i, Quantity = _random.Next(1,3000) });
-            //}
             return orders.OrderByDescending(x => x.Price).ToList();
         }
         

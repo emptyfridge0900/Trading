@@ -34,7 +34,7 @@ namespace Trading.Backend.Services
                     var tickers= _tickerService.GetTickers();
                     foreach (var ticker in tickers)
                     {
-                        await _hubContext.Clients.Group(ticker.Symbol).ReceiveTickerUpdate(_tickerService.GetOrders(ticker.Symbol),ct);
+                        await _hubContext.Clients.Group(ticker.Symbol).ReceiveTickerUpdate(_tickerService.GetOrders(ticker.Symbol,10),ct);
                         //_logger.LogInformation($"Sent ticker {ticker.Symbol}");
                     }
                     

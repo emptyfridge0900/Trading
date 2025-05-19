@@ -31,7 +31,7 @@ namespace Trading.Backend.Services
             foreach (var ticker in tickers)
             {
                 int j = 0;
-                for (int i = 1; i < 10; i++)
+                for (int i = 1; i < 20; i++)
                 {
                     _tradingService.Bid(_userName, ticker.Symbol,ticker.Price+i, rnd.Next(1, 10));
                     _tradingService.Ask(_userName, ticker.Symbol, ticker.Price+j, rnd.Next(1, 10));
