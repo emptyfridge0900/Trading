@@ -52,9 +52,12 @@ namespace Trading.WPFClient.ViewModels
         }
 
         public string Jwt;
-
+        public string Name;
         public UIViewModel(Window mainWinow)
         {
+            Name = JwtGen.GenerateName();
+            Jwt = JwtGen.GenerateJwtToken(Name);
+            OrderPageView = new OrderViewModel(Jwt);
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5053/ticker")
                 .WithServerTimeout(TimeSpan.FromSeconds(30))// 30 sec by default
@@ -121,7 +124,9 @@ namespace Trading.WPFClient.ViewModels
                 //await _hubConnection.StartAsync();
                 await ConnectWithRetryAsync(_hubConnection);
                 await _hubConnection.InvokeAsync("SendTickerLit");
-                await _hubConnection.InvokeAsync("Login");
+                
+                await _hubConnection.InvokeAsync("Login", Name);
+                
 
             }
             catch (Exception ex)

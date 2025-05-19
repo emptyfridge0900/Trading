@@ -8,10 +8,12 @@ namespace Trading.Backend.Hubs
     {
         private readonly ITickerService _tickerService;
         private readonly ILogger<TickerHub> _logger;
-        public TickerHub(ITickerService tickerService, ILogger<TickerHub> logger) 
+        private readonly UserService _userService;
+        public TickerHub(ITickerService tickerService, ILogger<TickerHub> logger, UserService userService) 
         {
             _tickerService = tickerService;
             _logger = logger;
+            _userService = userService;
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
@@ -29,7 +31,10 @@ namespace Trading.Backend.Hubs
         public async Task UnjoinGroup(string tickerName)
             => await Groups.RemoveFromGroupAsync(Context.ConnectionId, tickerName);
         
-        public async Task Login()
-            => await Clients.Caller.ReceiveJwt(UserService.GenerateJwtToken());
+        public async Task Login(string name)
+        {
+            _userService.CreateUser(name);
+        }
+             
     }
 }
