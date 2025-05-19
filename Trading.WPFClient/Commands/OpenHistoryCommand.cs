@@ -19,7 +19,7 @@ namespace Trading.WPFClient.Commands
         }
         public bool CanExecute(object? parameter)
         {
-            return _UIViewModel.Ticker != null;
+            return true;
         }
 
         public void Execute(object? parameter)
