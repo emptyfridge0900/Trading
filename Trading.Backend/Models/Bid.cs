@@ -5,9 +5,25 @@
     /// </summary>
     public class Bid
     {
-        public string Bidder { get; set; }
-        public float Price { get; set; }
-        public int Quantity { get; set; }
+        public string Bidder { get; init; }
+        public float Price { get; init; }
+        public int Quantity { get; private set; }
+        public Bid(string bidder,float price, int quantity)
+        {
+            if (price < 0)
+                throw new ArgumentOutOfRangeException(nameof(price));
+            if (quantity < 0)
+                throw new ArgumentOutOfRangeException(nameof(quantity));
+            Bidder = bidder;
+            Price = price;
+            Quantity = quantity;
+        }
+        public void UpdateQuantity(int quantity)
+        {
+            if (quantity < 0)
+                throw new ArgumentOutOfRangeException(nameof(quantity));
+            Quantity = quantity;
+        }
     }
     public class BidCollection
     {
@@ -38,9 +54,9 @@
         /// Returns bids for the quantity you entered
         /// </summary>
         /// <param name="quantity">how many bid to remove</param>
-        /// <param name="left">remaining quantity</param>
+        /// <param name="unredeemed">remaining quantity</param>
         /// <returns></returns>
-        public List<Bid> Take(int quantity, out int left)
+        public List<Bid> Take(int quantity, out int unredeemed)
         {
             var result = new List<Bid>();
 
@@ -52,16 +68,16 @@
                 if (bid.Quantity > quantity)
                 {
                     Total -= quantity;
-                    bid.Quantity -= quantity;
-                    left = 0;
-                    result.Add(bid);
+                    bid.UpdateQuantity(bid.Quantity - quantity);
+                    unredeemed = 0;
+                    result.Add(new Bid(bid.Bidder,bid.Price,quantity));
                 }
                 //removing quantity and bid quantity are same.
                 //no biding left, dequeue the bid and 0 remaining
                 else if (bid.Quantity == quantity)
                 {
                     Total -= quantity;
-                    left = 0;
+                    unredeemed = 0;
                     result.Add(BidQueue.Dequeue());
                 }
                 else
@@ -76,18 +92,18 @@
                     //if no bidding left, then returns remaining number
                     if (BidQueue.TryPeek(out bid))
                     {
-                        result.AddRange(Take(quantity, out left));
+                        result.AddRange(Take(quantity, out unredeemed));
                     }
                     else
                     {
-                        left = quantity;
+                        unredeemed = quantity;
                     }
 
                 }
             }
             else
             {
-                left = quantity;
+                unredeemed = quantity;
             }
 
             return result;

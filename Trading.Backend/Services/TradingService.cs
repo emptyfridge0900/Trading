@@ -64,13 +64,13 @@ namespace Trading.Backend.Services
                 {
                     if (i.Total > 0)
                     {
-                        var asks = i.Take(quantity, out var remain);
+                        var asks = i.Take(quantity, out var unredeemed);
                         foreach (var item in asks)
                         {
                             _hubContext.Clients.User(item.Asker).ReceiveRecords(GetTradingRecords(item.Asker));
                         }
                         s.UpdateCurrentPrice();
-                        quantity = remain;
+                        quantity = unredeemed;
                     }
                 }
                 //if (s.Asks.ContainsKey(price))
@@ -92,12 +92,7 @@ namespace Trading.Backend.Services
                     var collection = s.Bids[price];
                     if(quantity > 0)
                     {
-                        collection.Add(new Bid
-                        {
-                            Bidder = userId,
-                            Price = price,
-                            Quantity = quantity,
-                        });
+                        collection.Add(new Bid(userId,price,quantity));
                     }
                     
                 }
@@ -107,12 +102,7 @@ namespace Trading.Backend.Services
                     var collection = s.Bids[price];
                     if (quantity > 0)
                     {
-                        collection.Add(new Bid
-                        {
-                            Bidder = userId,
-                            Price = price,
-                            Quantity = quantity,
-                        });
+                        collection.Add(new Bid(userId,price,quantity));
                     }
                 }
 
@@ -129,13 +119,13 @@ namespace Trading.Backend.Services
                 {
                     if (i.Total > 0)
                     {
-                        var bids = i.Take(quantity, out var remain);
+                        var bids = i.Take(quantity, out var unredeemed);
                         foreach (var item in bids)
                         {
                             _hubContext.Clients.User(item.Bidder).ReceiveRecords(GetTradingRecords(item.Bidder));
                         }
                         s.UpdateCurrentPrice();
-                        quantity = remain;
+                        quantity = unredeemed;
                     }
                 }
                 //if (s.Bids.ContainsKey(price))
@@ -153,12 +143,7 @@ namespace Trading.Backend.Services
                     var collection = s.Asks[price];
                     if(quantity>0)
                     {
-                        collection.Add(new Ask
-                        {
-                            Asker = userId,
-                            Price = price,
-                            Quantity = quantity,
-                        });
+                        collection.Add(new Ask(userId,price,quantity));
                     }
                     
                 }
@@ -168,12 +153,7 @@ namespace Trading.Backend.Services
                     var collection = s.Asks[price];
                     if (quantity > 0)
                     {
-                        collection.Add(new Ask
-                        {
-                            Asker = userId,
-                            Price = price,
-                            Quantity = quantity,
-                        });
+                        collection.Add(new Ask(userId, quantity,quantity));
                     }
                 }
 
