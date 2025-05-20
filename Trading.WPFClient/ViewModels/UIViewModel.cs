@@ -147,6 +147,7 @@ namespace Trading.WPFClient.ViewModels
                 Console.WriteLine("Successfully reconnected!");
                 Console.WriteLine(_hubConnection.State);
                 await _hubConnection.InvokeAsync("SendTickerList", CurrentPage, PageSize);
+                await _hubConnection.InvokeAsync("Login", Name);
             };
 
             //try reconnect 4 time
