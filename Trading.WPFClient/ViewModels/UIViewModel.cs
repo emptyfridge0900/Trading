@@ -76,7 +76,19 @@ namespace Trading.WPFClient.ViewModels
         public int Quantity { get; set; }
         public decimal Price { get; set; }
 
-        
+
+
+        private const int PageSize = 2;
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                _currentPage = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         public UIViewModel(Window mainWinow)
@@ -100,14 +112,14 @@ namespace Trading.WPFClient.ViewModels
 
             NativeMethods.AllocConsole();
 
-            _hubConnection.On("ReceiveTickerList", (List<Ticker> x) => {
-                 try
-                 {
-                    Tickers = new ObservableCollection<Ticker>(x);
-                 }
-                 catch (Exception ex)
-                 {
-                 }
+            _hubConnection.On("ReceiveTickerList", (PaginatedResult<Ticker> x) => {
+                try
+                {
+                    Tickers = new ObservableCollection<Ticker>(x.Results);
+                }
+                catch (Exception ex)
+                {
+                }
                 
             });
 
@@ -124,7 +136,7 @@ namespace Trading.WPFClient.ViewModels
             {
                 Console.WriteLine("Successfully reconnected!");
                 Console.WriteLine(_hubConnection.State);
-                await _hubConnection.InvokeAsync("SendTickerList");
+                await _hubConnection.InvokeAsync("SendTickerList", CurrentPage, PageSize);
             };
 
             //try reconnect 4 time
@@ -158,7 +170,7 @@ namespace Trading.WPFClient.ViewModels
             {
                 //await _hubConnection.StartAsync();
                 await ConnectWithRetryAsync(_hubConnection);
-                await _hubConnection.InvokeAsync("SendTickerList");
+                await _hubConnection.InvokeAsync("SendTickerList", CurrentPage, PageSize);
                 await _hubConnection.InvokeAsync("Login", Name);
 
             }

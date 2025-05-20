@@ -31,7 +31,7 @@ namespace Trading.Backend.Services
                 try
                 {
                     //_tickerService.UpdatePrices();
-                    var tickers= _tickerService.GetTickers();
+                    var tickers= _tickerService.GetTickers(1, 10).Results;
                     foreach (var ticker in tickers)
                     {
                         await _hubContext.Clients.Group(ticker.Symbol).ReceiveTickerUpdate(_tickerService.GetOrders(ticker.Symbol,10),ct);

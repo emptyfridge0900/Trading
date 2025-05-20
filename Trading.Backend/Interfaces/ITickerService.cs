@@ -4,7 +4,7 @@ namespace Trading.Backend.Interfaces
 {
     public interface ITickerService
     {
-        public List<Ticker> GetTickers();
+        public PaginatedResult<Ticker> GetTickers(int pageNum, int pageSize);
         public List<Order> GetOrders(string tickerName, int numOfRow);
         public void UpdatePrices();
     }

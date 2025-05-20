@@ -26,7 +26,7 @@ namespace Trading.Backend.Services
             using var scope = _scopeFactory.CreateScope();
             //var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
             //var ticker = db.Tickers;
-            var tickers = _tickerService.GetTickers();
+            var tickers = _tickerService.GetTickers(1, 10).Results;
             Random rnd = new Random();
             foreach (var ticker in tickers)
             {

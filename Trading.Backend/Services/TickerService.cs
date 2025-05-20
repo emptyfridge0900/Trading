@@ -24,12 +24,27 @@ namespace Trading.Backend.Services
             _store = store;
         }
 
-        public List<Ticker> GetTickers()
+        public PaginatedResult<Ticker> GetTickers(int pageNum, int pageSize)
         {
             using var scope = scopeFactory.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
 
-            return db.Tickers.ToList();
+            var totalCount = db.Tickers.Count();
+            var tickers = db.Tickers
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize);
+
+            var result = new PaginatedResult<Ticker>
+            {
+                Results = tickers.ToList(),
+                PageNum = pageNum,
+                PageSize = pageSize,
+
+                IsPrevAvailable = pageNum > 1,
+                IsNextAvailable = totalCount - ((pageNum - 1) * pageSize + pageSize) > 0,
+            };
+
+            return result;
         }
 
         public List<Order> GetOrders(string tickerName, int numOfRow)
@@ -37,7 +52,7 @@ namespace Trading.Backend.Services
             List<Order> orders = new List<Order>();
             using var scope = scopeFactory.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
-            var ticker = db.Tickers.FirstOrDefault(t => t.Symbol == tickerName);
+            var ticker = db.Tickers.FirstOrDefault(t => t.Symbol.Equals(tickerName, StringComparison.OrdinalIgnoreCase));
 
             if (_store.Stocks.ContainsKey(ticker.Symbol))
             {

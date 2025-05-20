@@ -22,8 +22,8 @@ namespace Trading.Backend.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendTickerList()
-            => await Clients.Caller.ReceiveTickerList(_tickerService.GetTickers());
+        public async Task SendTickerList(int pageNum, int pageSize)
+            => await Clients.Caller.ReceiveTickerList(_tickerService.GetTickers(pageNum, pageSize));
         
         public async Task JoinGroup(string tickerName)
          => await Groups.AddToGroupAsync(Context.ConnectionId, tickerName);
