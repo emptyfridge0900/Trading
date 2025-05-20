@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using Microsoft.AspNetCore.SignalR;
 using Trading.Backend.Hubs;
 using Trading.Backend.Interfaces;
 using Trading.Backend.Models;
@@ -19,17 +16,14 @@ namespace Trading.Backend.Services
 
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<TradingService> _logger;
-        private readonly ITickerService _tickerService;
-        private readonly UserService _userService;
         public TradingService(IServiceScopeFactory factory, ILogger<TradingService> logger, 
-            IHubContext<TradingHub, ITrade> hubContext, ITickerService tickerService, Store store, UserService userService)
+            IHubContext<TradingHub, ITrade> hubContext, Store store)
         {
             _scopeFactory = factory;
             _logger = logger;
             _store = store;
             _hubContext = hubContext;
-            _tickerService = tickerService;
-            _userService = userService;
+
         }
         public List<TradeRecord> GetTradingRecords(string userId)
         {
@@ -73,16 +67,7 @@ namespace Trading.Backend.Services
                         quantity = unredeemed;
                     }
                 }
-                //if (s.Asks.ContainsKey(price))
-                //{
-                //    var collection = s.Asks[price];
-                //    var asks = collection.Take(quantity,out var remain);
-                //    foreach (var item in asks)
-                //    {
-                //        _hubContext.Clients.User(item.Asker).ReceiveRecords(GetTradingRecords(item.Asker));
-                //    }
-                //    quantity = remain;
-                //}
+
 
 
                 //if someone has already bid 10 Teslas at $420,
@@ -128,16 +113,7 @@ namespace Trading.Backend.Services
                         quantity = unredeemed;
                     }
                 }
-                //if (s.Bids.ContainsKey(price))
-                //{
-                //    var collection = s.Bids[price];
-                //    var asks = collection.Take(quantity, out var remain);
-                //    foreach (var item in asks)
-                //    {
-                //        _hubContext.Clients.User(item.Bidder).ReceiveRecords(GetTradingRecords(item.Bidder));
-                //    }
-                //    quantity = remain;
-                //}
+
                 if (s.Asks.ContainsKey(price))
                 {
                     var collection = s.Asks[price];

@@ -1,7 +1,4 @@
-﻿
-using System;
-using Trading.Backend.Interfaces;
-using Trading.Backend.Persistance;
+﻿using Trading.Backend.Interfaces;
 
 namespace Trading.Backend.Services
 {

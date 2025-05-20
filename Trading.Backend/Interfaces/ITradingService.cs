@@ -1,5 +1,4 @@
-﻿using Trading.Backend.Models;
-using Trading.Common.Models;
+﻿using Trading.Common.Models;
 
 namespace Trading.Backend.Interfaces
 {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Trading.Backend.Hubs;
 using Trading.Backend.Interfaces;
-using Trading.Backend.Models;
 
 namespace Trading.Backend.Services
 {

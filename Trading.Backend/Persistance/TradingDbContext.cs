@@ -1,6 +1,4 @@
-﻿using System.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
 using Trading.Backend.Models;
 using Trading.Common.Models;
 

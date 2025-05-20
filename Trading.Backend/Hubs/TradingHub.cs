@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Trading.Backend.Interfaces;
-using Trading.Backend.Persistance;
-using Trading.Backend.Services;
 using Trading.Common.Models;
 
 namespace Trading.Backend.Hubs
@@ -13,12 +10,10 @@ namespace Trading.Backend.Hubs
     public class TradingHub : Hub<ITrade>
     {
         private ITradingService _service;
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<TradingHub> _logger;
-        public TradingHub(ITradingService service, IServiceScopeFactory factory, ILogger<TradingHub> logger)
+        public TradingHub(ITradingService service, ILogger<TradingHub> logger)
         {
             _service = service;
-            _scopeFactory = factory; 
             _logger = logger;
         }
         public override async Task OnDisconnectedAsync(Exception exception)

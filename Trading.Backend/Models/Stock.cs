@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using Trading.Backend.Services;
-
-namespace Trading.Backend.Models
+﻿namespace Trading.Backend.Models
 {
     public class Stock
     {

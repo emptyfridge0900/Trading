@@ -1,5 +1,4 @@
-﻿using Trading.Common.Models;
-
+﻿
 namespace Trading.Backend.Models
 {
     /// <summary>
