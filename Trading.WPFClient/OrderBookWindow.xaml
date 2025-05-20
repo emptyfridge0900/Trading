@@ -7,7 +7,7 @@
         xmlns:viewModels="clr-namespace:Trading.WPFClient.ViewModels"
         xmlns:views="clr-namespace:Trading.WPFClient.Views"
         mc:Ignorable="d"
-        Title="Order Book" Height="450" Width="800" Loaded="Window_Loaded" Closed="Window_Closed">
+        Title="Order Book" Height="500" Width="280" Loaded="Window_Loaded" Closed="Window_Closed">
 
     <ContentControl Content="{Binding CurrentViewModel}">
         <ContentControl.Resources>

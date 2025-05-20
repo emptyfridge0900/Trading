@@ -5,32 +5,68 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Trading.WPFClient.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             d:DesignHeight="400" d:DesignWidth="400">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+
+        <!-- Ticker Selection -->
+        <Grid Grid.Row="0" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Name : " Grid.Row="0" Grid.Column="0"/>
-            <ComboBox ItemsSource="{Binding Tickers}" SelectedValue="{Binding TickerName}" Grid.Column="1" Margin="0,0,600,0">
-                
-            </ComboBox>
+            <Label Content="Ticker:" Grid.Column="0" VerticalAlignment="Center" FontSize="12" Margin="0,0,5,0"/>
+            <ComboBox Grid.Column="1" 
+                      ItemsSource="{Binding Tickers}" 
+                      SelectedValue="{Binding TickerName}" 
+                      Width="150" 
+                      FontSize="12" 
+                      VerticalAlignment="Center"/>
         </Grid>
-        <Grid Grid.Row="1">
-            <ListView ItemsSource="{Binding Orders}"  >
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Layer"  DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Header="Price"  DisplayMemberBinding="{Binding Price}"/>
-                        <GridViewColumn Header="Quantity"  DisplayMemberBinding="{Binding Quantity}"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Grid>
+
+        <!-- Order Book ListView -->
+        <ListView Grid.Row="1" 
+                  ItemsSource="{Binding Orders}" 
+                  MaxHeight="400" 
+                  MaxWidth="300" 
+                  MinWidth="250"
+                  HorizontalAlignment="Center">
+            <ListView.Resources>
+                <Style TargetType="ListView">
+                    <Setter Property="BorderBrush" Value="#CCCCCC"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Style>
+                <Style TargetType="GridViewColumnHeader">
+                    <Setter Property="FontSize" Value="11"/>
+                    <Setter Property="Padding" Value="3"/>
+                    <Setter Property="Background" Value="#F5F5F5"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="FontSize" Value="11"/>
+                    <Setter Property="Padding" Value="3"/>
+                    <Setter Property="Height" Value="16"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Name}" Value="Bid">
+                            <Setter Property="Background" Value="LightBlue"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Name}" Value="Ask">
+                            <Setter Property="Background" Value="LightPink"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Layer" DisplayMemberBinding="{Binding Name}" Width="70"/>
+                    <GridViewColumn Header="Price" DisplayMemberBinding="{Binding Price, StringFormat=N2}" Width="80"/>
+                    <GridViewColumn Header="Quantity" DisplayMemberBinding="{Binding Quantity}" Width="80"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </UserControl>
