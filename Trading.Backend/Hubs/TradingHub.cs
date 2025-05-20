@@ -50,7 +50,7 @@ namespace Trading.Backend.Hubs
                 Quantity = quantity,
                 UserId = Context.UserIdentifier
             };
-            _service.AddRecord(Context.UserIdentifier, record);
+            _service.AddRecord(record);
         }
     }
 }
