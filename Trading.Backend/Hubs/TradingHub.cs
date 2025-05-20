@@ -21,6 +21,12 @@ namespace Trading.Backend.Hubs
             _scopeFactory = factory; 
             _logger = logger;
         }
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            _logger.LogInformation($"{Context.ConnectionId} ({Context.UserIdentifier}) disconnected.");
+            await base.OnDisconnectedAsync(exception);
+        }
+
         public async Task SendTradingHistory()
         {
             _logger.LogInformation("Context.UserIdentifier:" + Context.UserIdentifier);
@@ -48,7 +54,7 @@ namespace Trading.Backend.Hubs
                 Ticker = symbol,
                 Price = price,
                 Quantity = quantity,
-                UserId = Context.UserIdentifier
+                UserId = Context.UserIdentifier,
             };
             _service.AddRecord(record);
         }

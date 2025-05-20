@@ -5,6 +5,9 @@ using Trading.Backend.Persistance;
 
 namespace Trading.Backend.Services
 {
+    /// <summary>
+    /// Data seeder
+    /// </summary>
     public class DataProducer : IHostedService
     {
         private readonly ITradingService _tradingService;
@@ -24,8 +27,6 @@ namespace Trading.Backend.Services
         {
             _logger.LogInformation("Data producer started.");
             using var scope = _scopeFactory.CreateScope();
-            //var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
-            //var ticker = db.Tickers;
             var tickers = _tickerService.GetTickers(1, 10).Results;
             Random rnd = new Random();
             foreach (var ticker in tickers)

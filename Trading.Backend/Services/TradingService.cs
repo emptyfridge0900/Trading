@@ -56,6 +56,9 @@ namespace Trading.Backend.Services
                 var s = _store.Stocks[symbol];
                 s.UpdateCurrentPrice();
                 //before starting bid, check the bid price is in ask price
+                //let's say current price is $430 and you want to bid $420
+                //look for ask order that price between 430 and 420. If there is a ask order at price $428
+                //then we process the $428 ask order first, sell it at better price!
                 var inRangeAsks = s.Asks.Where(x => (s.CurrentPrice >= x.Key && x.Key >= price)).OrderByDescending(x=>x.Key).Select(x=>x.Value);
                 foreach (var i in inRangeAsks)
                 {
@@ -81,6 +84,9 @@ namespace Trading.Backend.Services
                 //    quantity = remain;
                 //}
 
+
+                //if someone has already bid 10 Teslas at $420,
+                //add your bid to the queue and increase to the total bid quantity.
                 if (s.Bids.ContainsKey(price))
                 {
                     var collection = s.Bids[price];

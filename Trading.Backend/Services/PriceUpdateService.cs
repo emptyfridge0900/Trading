@@ -5,15 +5,18 @@ using Trading.Backend.Models;
 
 namespace Trading.Backend.Services
 {
+    /// <summary>
+    /// Send updated orderbook info to all subscriber
+    /// </summary>
     public class PriceUpdateService : BackgroundService
     {
-        private readonly IHubContext<TickerHub,IWpfClient> _hubContext;
+        private readonly IHubContext<TickerHub,ITicker> _hubContext;
         private readonly ITickerService _tickerService;
         private readonly ILogger<PriceUpdateService> _logger;
         private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(2);
 
         public PriceUpdateService(
-            IHubContext<TickerHub,IWpfClient> hubContext,
+            IHubContext<TickerHub,ITicker> hubContext,
             ITickerService tickerService,
             ILogger<PriceUpdateService> logger)
         {
@@ -34,7 +37,7 @@ namespace Trading.Backend.Services
                     var tickers= _tickerService.GetTickers(1, 10).Results;
                     foreach (var ticker in tickers)
                     {
-                        await _hubContext.Clients.Group(ticker.Symbol).ReceiveTickerUpdate(_tickerService.GetOrders(ticker.Symbol,10),ct);
+                        await _hubContext.Clients.Group(ticker.Symbol).ReceiveOrderBook(_tickerService.GetOrders(ticker.Symbol,10),ct);
                         //_logger.LogInformation($"Sent ticker {ticker.Symbol}");
                     }
                     

@@ -1,5 +1,8 @@
 ﻿namespace Trading.Backend.Models
 {
+    /// <summary>
+    /// This class represnets ask order 
+    /// </summary>
     public class Ask
     {
         public string Asker { get; set; }

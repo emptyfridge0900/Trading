@@ -7,6 +7,9 @@ using System.Windows.Input;
 
 namespace Trading.WPFClient.Commands
 {
+    /// <summary>
+    /// RelayCommand
+    /// </summary>
     public class DefaultCommand : ICommand
     {
         readonly Func<Task> _exe;

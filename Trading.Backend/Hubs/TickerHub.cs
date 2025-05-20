@@ -4,7 +4,7 @@ using Trading.Backend.Services;
 
 namespace Trading.Backend.Hubs
 {
-    public class TickerHub : Hub<IWpfClient>
+    public class TickerHub : Hub<ITicker>
     {
         private readonly ITickerService _tickerService;
         private readonly ILogger<TickerHub> _logger;
@@ -16,9 +16,10 @@ namespace Trading.Backend.Hubs
             _userService = userService;
         }
 
+        //just logging purpose
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            _logger.LogInformation($"{Context.ConnectionId} disconnected.");
+            _logger.LogInformation($"{Context.ConnectionId} ({Context.UserIdentifier}) disconnected.");
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -30,7 +31,12 @@ namespace Trading.Backend.Hubs
         
         public async Task UnjoinGroup(string tickerName)
             => await Groups.RemoveFromGroupAsync(Context.ConnectionId, tickerName);
-        
+
+        /// <summary>
+        /// If the client sends their name, we will consider them logged in.
+        /// </summary>
+        /// <param name="name">name of the client, this name matches SignalR' user identifier</param>
+        /// <returns>return nothing, client has own jwt generator</returns>
         public async Task Login(string name)
         {
             _userService.CreateUser(name);

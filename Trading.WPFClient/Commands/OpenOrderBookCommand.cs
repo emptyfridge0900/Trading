@@ -13,6 +13,10 @@ namespace Trading.WPFClient.Commands
     public class OpenOrderBookCommand : ICommand
     {
         public event EventHandler? CanExecuteChanged;
+        /// <summary>
+        /// ViewModel is here for passing ticker information to OrderBookViewModel.
+        /// There are better way to solve it, but it's work. Just leave it for now
+        /// </summary>
         private UIViewModel _UIViewModel;
         public OpenOrderBookCommand(UIViewModel viewModel)
         {

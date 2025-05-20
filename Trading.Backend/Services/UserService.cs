@@ -35,8 +35,7 @@ namespace Trading.Backend.Services
                     Ticker = tickers.Select(x => x.Symbol).ToList()[new Random().Next(0, tickers.Count())],
                     Price = new Random().Next(1, 99),
                     Quantity = new Random().Next(1, 99),
-                    UserId = userId
-                });
+                    UserId = userId                });
             }
 
             if (user == null)

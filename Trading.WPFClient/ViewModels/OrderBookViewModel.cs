@@ -58,7 +58,7 @@ namespace Trading.WPFClient.ViewModels
                 .WithAutomaticReconnect()
                 .Build();
             
-            _hubConnection.On("ReceiveTickerUpdate", (List<Order> x) => {
+            _hubConnection.On("ReceiveOrderBook", (List<Order> x) => {
                 try
                 {
                     Orders = new ObservableCollection<Order>(x);

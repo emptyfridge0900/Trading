@@ -32,6 +32,12 @@ namespace Trading.WPFClient
             ((HistoryViewModel)context.CurrentViewModel).Disconnect();
         }
 
+        /// <summary>
+        /// Calling Connect() in constructor of viewmodel doesn't work
+        /// Call it once window is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var context = (SubViewModel)DataContext;

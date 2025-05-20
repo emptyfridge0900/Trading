@@ -2,6 +2,9 @@
 
 namespace Trading.Backend.Models
 {
+    /// <summary>
+    /// Simulate stock information in a database
+    /// </summary>
     public class Store
     {
         public Dictionary<string,Stock> Stocks { get; init; }

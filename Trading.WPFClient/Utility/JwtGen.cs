@@ -31,6 +31,12 @@ namespace Trading.WPFClient.Utility
 
             return $"{firstName}";
         }
+        /// <summary>
+        /// Generates a symmetric key,and then generate jwt
+        /// secretkey, issure, and audience are hard coded in both server and client sides
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static string GenerateJwtToken(string name)
         {
             string secretKey = "YourWeakSecretKeyIsLongEnoughToGenerateToken";

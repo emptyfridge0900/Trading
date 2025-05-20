@@ -84,7 +84,6 @@ namespace Trading.WPFClient.ViewModels
             {
                 await ConnectWithRetryAsync(_hubConnection);
                 await _hubConnection.InvokeAsync("SendTradingHistory");
-
             }
             catch (Exception ex)
             {

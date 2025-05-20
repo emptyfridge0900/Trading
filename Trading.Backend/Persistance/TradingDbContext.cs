@@ -6,6 +6,9 @@ using Trading.Common.Models;
 
 namespace Trading.Backend.Persistance
 {
+    /// <summary>
+    /// Not a real database context, in-memory db is being used here
+    /// </summary>
     public class TradingDbContext : DbContext
     {
         public DbSet<TradeRecord> Records { get; set; }
