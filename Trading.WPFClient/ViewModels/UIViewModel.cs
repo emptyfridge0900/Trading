@@ -42,7 +42,8 @@ namespace Trading.WPFClient.ViewModels
         {
             get { return _ticker; }
             set { 
-                _ticker = value; 
+                _ticker = value;
+                Symbol = value.Symbol;
                 OnPropertyChanged();
             }
         }
@@ -72,13 +73,22 @@ namespace Trading.WPFClient.ViewModels
 
 
         public List<string> Sides { get; } = new List<string> { "Bid", "Ask" };
-        public string Symbol { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
+        private string _symbol;
+        public string Symbol 
+        {
+            get => _symbol;
+            set
+            {
+                _symbol = value;
+                OnPropertyChanged();
+            }
+        }
+        public int Quantity { get; set; } = 1;
+        public decimal Price { get; set; } = 10;
 
 
 
-        private const int PageSize = 2;
+        private const int PageSize = 10;
         private int _currentPage = 1;
         public int CurrentPage
         {
@@ -241,7 +251,12 @@ namespace Trading.WPFClient.ViewModels
 
         private async Task SubmitOrder()
         {
-            await _tradeHubConnection.InvokeAsync("Order", SelectedSide, Symbol, Price, Quantity);
+            var symbols = Tickers.Select(x => x.Symbol);
+            if (symbols.Contains(Symbol))
+                await _tradeHubConnection.InvokeAsync("Order", SelectedSide, Symbol, Price, Quantity);
+            else
+                MessageBox.Show("Please enter a valid ticker symbol", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+
         }
 
         private async Task Exit()
