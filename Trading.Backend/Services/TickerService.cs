@@ -24,7 +24,7 @@ namespace Trading.Backend.Services
 
         public async Task<PaginatedResult<Ticker>> GetTickers(int pageNum, int pageSize)
         {
-            var Tickers = _tickerList.AsQueryable();
+            var Tickers = _tickerList;
             var totalCount = Tickers.Count();
             var tickers = Tickers
                 .Skip((pageNum - 1) * pageSize)
@@ -32,7 +32,7 @@ namespace Trading.Backend.Services
 
             var result = new PaginatedResult<Ticker>
             {
-                Results = await tickers.ToListAsync(),
+                Results = tickers.ToList(),
                 PageNum = pageNum,
                 PageSize = pageSize,
 
@@ -46,7 +46,7 @@ namespace Trading.Backend.Services
         public async Task<List<Order>> GetOrders(string tickerName, int numOfRow)
         {
             List<Order> orders = new List<Order>();
-            var ticker = await _tickerList.AsQueryable().FirstOrDefaultAsync(t => t.Symbol.Equals(tickerName, StringComparison.OrdinalIgnoreCase));
+            var ticker = _tickerList.FirstOrDefault(t => t.Symbol.Equals(tickerName, StringComparison.OrdinalIgnoreCase));
 
             if (_store.Stocks.ContainsKey(ticker.Symbol))
             {
