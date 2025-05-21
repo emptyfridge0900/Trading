@@ -264,7 +264,10 @@ namespace Trading.WPFClient.ViewModels
         {
             var symbols = Tickers.Select(x => x.Symbol);
             if (symbols.Contains(Symbol))
+            {
                 await _tradeHubConnection.InvokeAsync("Order", SelectedSide, Symbol, Price, Quantity);
+                MessageBox.Show("Your order has been successfully completed", "Success", MessageBoxButton.OK, MessageBoxImage.None);
+            }
             else
                 MessageBox.Show("Please enter a valid ticker symbol", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 
