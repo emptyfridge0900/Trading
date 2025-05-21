@@ -13,13 +13,13 @@ namespace Trading.WPFClient.Commands
     public class DefaultCommand : ICommand
     {
         readonly Func<Task> _exe;
-        readonly Predicate<object> _canExe;
+        readonly Predicate<object?>? _canExe;
         public event EventHandler? CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
-        public DefaultCommand(Func<Task> exe, Predicate<object> canExe)
+        public DefaultCommand(Func<Task> exe, Predicate<object?>? canExe)
         {
             _exe = exe;
             _canExe = canExe;

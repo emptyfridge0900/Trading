@@ -17,14 +17,14 @@ namespace Trading.Backend.Hubs
         }
 
         //just logging purpose
-        public override async Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
             _logger.LogInformation($"{Context.ConnectionId} ({Context.UserIdentifier}) disconnected.");
             await base.OnDisconnectedAsync(exception);
         }
 
         public async Task SendTickerList(int pageNum, int pageSize)
-            => await Clients.Caller.ReceiveTickerList(await _tickerService.GetTickers(pageNum, pageSize));
+            => await Clients.Caller.ReceiveTickerList(_tickerService.GetTickers(pageNum, pageSize));
         
         public async Task JoinGroup(string tickerName)
          => await Groups.AddToGroupAsync(Context.ConnectionId, tickerName);
@@ -39,7 +39,7 @@ namespace Trading.Backend.Hubs
         /// <returns>return nothing, client has own jwt generator</returns>
         public async Task Login(string name)
         {
-            _userService.CreateUser(name);
+            await _userService.CreateUser(name);
         }
              
     }

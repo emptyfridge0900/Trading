@@ -16,7 +16,7 @@ namespace Trading.Backend.Hubs
             _service = service;
             _logger = logger;
         }
-        public override async Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
             _logger.LogInformation($"{Context.ConnectionId} ({Context.UserIdentifier}) disconnected.");
             await base.OnDisconnectedAsync(exception);
@@ -25,8 +25,8 @@ namespace Trading.Backend.Hubs
         public async Task SendTradingHistory()
         {
             _logger.LogInformation("Context.UserIdentifier:" + Context.UserIdentifier);
-            var records = await _service.GetTradingRecords(Context.UserIdentifier);
-            await Clients.User(Context.UserIdentifier).ReceiveRecords(records);
+            var records = await _service.GetTradingRecords(Context.UserIdentifier!);
+            await Clients.User(Context.UserIdentifier!).ReceiveRecords(records);
         }
 
         public async Task Order(string side, string symbol, float price, int quantity)
@@ -35,11 +35,11 @@ namespace Trading.Backend.Hubs
 
             if(side == "Bid")
             {
-                await _service.Bid(Context.UserIdentifier, symbol, price, quantity);
+                await _service.Bid(Context.UserIdentifier!, symbol, price, quantity);
             }
             else
             {
-                await _service.Ask(Context.UserIdentifier, symbol, price, quantity);
+                await _service.Ask(Context.UserIdentifier!, symbol, price, quantity);
             }
 
             var record = new TradeRecord

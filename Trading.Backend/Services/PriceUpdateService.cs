@@ -32,10 +32,10 @@ namespace Trading.Backend.Services
             {
                 try
                 {
-                    var tickers= (await _tickerService.GetTickers(1, 10)).Results;
+                    var tickers= (_tickerService.GetTickers(1, 10)).Results;
                     foreach (var ticker in tickers)
                     {
-                        await _hubContext.Clients.Group(ticker.Symbol).ReceiveOrderBook(await _tickerService.GetOrders(ticker.Symbol,10),ct);
+                        await _hubContext.Clients.Group(ticker.Symbol).ReceiveOrderBook(_tickerService.GetOrders(ticker.Symbol,10),ct);
                         //_logger.LogInformation($"Sent ticker {ticker.Symbol}");
                     }
                     

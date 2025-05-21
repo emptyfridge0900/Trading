@@ -13,12 +13,12 @@ namespace Trading.Backend.Services
         {
             _scopeFactory = scopeFactory;
         }
-        public User CreateUser(string userId)
+        public async Task<User> CreateUser(string userId)
         {
             var records = new List<TradeRecord>();
             var datetimes = RandomDateTimes(5);
             using var db = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<TradingDbContext>();
-            var user = db.Users.Where(u => u.UserId == userId).Include(u => u.TradeRecords).SingleOrDefault();
+            var user = await db.Users.Where(u => u.UserId == userId).Include(u => u.TradeRecords).SingleOrDefaultAsync();
 
             var tickers = db.Tickers;
 

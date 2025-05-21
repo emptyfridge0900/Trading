@@ -10,11 +10,9 @@ namespace Trading.WPFClient.ViewModels
     class MainViewModel:ViewModelBase
     {
         public ViewModelBase CurrentViewModel { get; set; }
-        private Window _mainWindow;
-        public MainViewModel(Window mainWindow)
+        public MainViewModel()
         {
-            _mainWindow = mainWindow;
-            CurrentViewModel = new UIViewModel(_mainWindow);
+            CurrentViewModel = new UIViewModel();
         }
     }
 }

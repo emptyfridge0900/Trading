@@ -22,7 +22,7 @@ namespace Trading.Backend.Services
             _tickerList = db.Tickers.ToList();
         }
 
-        public async Task<PaginatedResult<Ticker>> GetTickers(int pageNum, int pageSize)
+        public PaginatedResult<Ticker> GetTickers(int pageNum, int pageSize)
         {
             var Tickers = _tickerList;
             var totalCount = Tickers.Count();
@@ -43,11 +43,14 @@ namespace Trading.Backend.Services
             return result;
         }
 
-        public async Task<List<Order>> GetOrders(string tickerName, int numOfRow)
+        public List<Order> GetOrders(string tickerName, int numOfRow)
         {
             List<Order> orders = new List<Order>();
             var ticker = _tickerList.FirstOrDefault(t => t.Symbol.Equals(tickerName, StringComparison.OrdinalIgnoreCase));
-
+            if (ticker == null)
+            {
+                return orders;
+            }
             if (_store.Stocks.ContainsKey(ticker.Symbol))
             {
                 var stock = _store.Stocks[ticker.Symbol];
@@ -55,7 +58,7 @@ namespace Trading.Backend.Services
                 {
                     if (bid.Total > 0)
                     {
-                        orders.Add(new Order { Name = "Bid", Price = bid.Price, Quantity = bid.Total });
+                        orders.Add(new Order("Bid", bid.Price, bid.Total));
                         if (orders.Count == numOfRow)
                             break;
                     }
@@ -65,7 +68,7 @@ namespace Trading.Backend.Services
                 {
                     if(ask.Total>0)
                     {
-                        orders.Add(new Order { Name = "Ask", Price = ask.Price, Quantity = ask.Total });
+                        orders.Add(new Order ("Ask", ask.Price, ask.Total));
                         if (orders.Count == 2* numOfRow)
                             break;
                     }

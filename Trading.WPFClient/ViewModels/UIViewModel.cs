@@ -23,8 +23,6 @@ namespace Trading.WPFClient.ViewModels
     {
         private readonly HubConnection _hubConnection;
         private readonly HubConnection _tradeHubConnection;
-        private readonly ILogger<UIViewModel> _logger;
-        private Window _mainWindow;
         private ObservableCollection<Ticker> _tickers;
         
         public ObservableCollection<Ticker> Tickers 
@@ -111,8 +109,11 @@ namespace Trading.WPFClient.ViewModels
                 OnPropertyChanged();
             }
         }
-        public UIViewModel(Window mainWinow)
+        public UIViewModel()
         {
+            _tickers = new ObservableCollection<Ticker>();
+            _ticker = new Ticker();
+            _symbol = "TSLA";
             Name = JwtGen.GenerateName();
             Jwt = JwtGen.GenerateJwtToken(Name);
             _hubConnection = new HubConnectionBuilder()
@@ -139,6 +140,7 @@ namespace Trading.WPFClient.ViewModels
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex);
                 }
                 
             });
@@ -177,7 +179,6 @@ namespace Trading.WPFClient.ViewModels
                 }
             };
 
-            _mainWindow = mainWinow;
 
             OpenHistory = new OpenHistoryCommand(this);
             OpenOrder = new OpenOrderBookCommand(this);

@@ -26,7 +26,7 @@ namespace Trading.Backend.Services
             _logger.LogInformation("Data producer started.");
             using (var scope = _scopeFactory.CreateScope())
             {
-                var tickers = (await _tickerService.GetTickers(1, 10)).Results;
+                var tickers =  _tickerService.GetTickers(1, 10).Results;
                 Random rnd = new Random();
                 foreach (var ticker in tickers)
                 {
@@ -51,7 +51,7 @@ namespace Trading.Backend.Services
             {
                 using (var scope = _scopeFactory.CreateScope())
                 {
-                    var tickers = (await _tickerService.GetTickers(1, 10)).Results;
+                    var tickers = _tickerService.GetTickers(1, 10).Results;
                     Random rnd = new Random();
                     var ticker = tickers[rnd.Next(1, 10)];
                     var rndPrice = rnd.Next(-5, 5);

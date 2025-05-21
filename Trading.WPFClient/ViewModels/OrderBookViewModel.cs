@@ -65,7 +65,7 @@ namespace Trading.WPFClient.ViewModels
                 }
                 catch (Exception ex)
                 {
-
+                    Console.WriteLine(ex);
                 }
 
             });
@@ -97,8 +97,11 @@ namespace Trading.WPFClient.ViewModels
                     await ConnectWithRetryAsync(_hubConnection);
                 }
             };
+            _tickerName = symbol;
             TickerName = symbol;
+            _tickers = new ObservableCollection<string>();
             Tickers = new ObservableCollection<string>(tickers.Select(x=>x.Symbol));
+            _orders = new ObservableCollection<Order>();
         }
 
         public async void Connect()

@@ -28,6 +28,7 @@ namespace Trading.WPFClient.ViewModels
         private string _jwt;
         public HistoryViewModel(string jwt)
         {
+            _records = new ObservableCollection<TradeRecord>();
             _jwt = jwt;
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl($"http://localhost:5053/trading?access_token={_jwt}")
@@ -55,11 +56,12 @@ namespace Trading.WPFClient.ViewModels
                 return Task.CompletedTask;
             };
 
-            _hubConnection.Reconnected += async (f) =>
+            _hubConnection.Reconnected += (f) =>
             {
                 Console.WriteLine("Successfully reconnected!");
                 Console.WriteLine(_hubConnection.State);
                 //await _hubConnection.InvokeAsync("JoinGroup", TickerName);
+                return Task.CompletedTask;
             };
 
             _hubConnection.Closed += async (ex) =>
@@ -113,6 +115,7 @@ namespace Trading.WPFClient.ViewModels
                     // Failed to connect, trying again in 5000 ms.
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     Console.WriteLine("Not connected, try again in 5 seconds");
+                    Console.WriteLine(ex);
                     await Task.Delay(5000);
                 }
             }

@@ -17,7 +17,7 @@ namespace Trading.WPFClient
         {
             MainWindow = new MainWindow()
             {
-                DataContext = new MainViewModel(MainWindow)
+                DataContext = new MainViewModel()
             };
             MainWindow.Show();
             MainWindow.WindowState = WindowState.Normal;

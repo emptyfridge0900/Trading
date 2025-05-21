@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Trading.Backend.Hubs;
 using Trading.Backend.Interfaces;
 using Trading.Backend.Models;
@@ -28,10 +29,10 @@ namespace Trading.Backend.Services
         public async Task<List<TradeRecord>> GetTradingRecords(string userId)
         {
             using var db = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<TradingDbContext>();
-            var records = db.Records.Where(r => r.UserId == userId);
+            var records = await db.Records.Where(r => r.UserId == userId).ToListAsync();
             //there is 0 possibility that a user doesn't have any records. Because when a user is created, random records are given
-
-            return records.Reverse().ToList();
+            records.Reverse();
+            return records;
             
         }
 
