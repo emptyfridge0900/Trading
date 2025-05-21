@@ -1,11 +1,12 @@
 ﻿using Trading.Backend.Interfaces;
+using Trading.Common.Models;
 
 namespace Trading.Backend.Services
 {
     /// <summary>
     /// Data seeder
     /// </summary>
-    public class DataProducer : IHostedService
+    public class DataProducer : BackgroundService
     {
         private readonly ITradingService _tradingService;
         private readonly ITickerService _tickerService;
@@ -20,35 +21,51 @@ namespace Trading.Backend.Services
             _scopeFactory = scopeFactory;
             _tickerService = tickerService;
         }
-        public Task StartAsync(CancellationToken ct)
+        protected override async Task ExecuteAsync(CancellationToken ct)
         {
             _logger.LogInformation("Data producer started.");
-            using var scope = _scopeFactory.CreateScope();
-            var tickers = _tickerService.GetTickers(1, 10).Results;
-            Random rnd = new Random();
-            foreach (var ticker in tickers)
+            using (var scope = _scopeFactory.CreateScope())
             {
-                int j = 0;
-                for (int i = 1; i < 20; i++)
+                var tickers = (await _tickerService.GetTickers(1, 10)).Results;
+                Random rnd = new Random();
+                foreach (var ticker in tickers)
                 {
-                    _tradingService.Bid(_userName, ticker.Symbol,ticker.Price+i, rnd.Next(1, 10));
-                    _tradingService.Ask(_userName, ticker.Symbol, ticker.Price+j, rnd.Next(1, 10));
-                    j--;
+                    int j = 0;
+                    for (int i = 1; i < 20; i++)
+                    {
+                        await _tradingService.Bid(_userName, ticker.Symbol, ticker.Price + i, rnd.Next(1, 10));
+                        await _tradingService.Ask(_userName, ticker.Symbol, ticker.Price + j, rnd.Next(1, 10));
+                        j--;
+                    }
                 }
             }
-            //while (!ct.IsCancellationRequested)
-            //{
+            _logger.LogInformation("Data producer seeded data");
 
+            await ScalpingTrade(ct);
 
-            //}
-
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
-
-        public Task StopAsync(CancellationToken cancellationToken)
+        private async Task ScalpingTrade(CancellationToken ct)
         {
-            _logger.LogInformation("Data producer stopped.");
-            return Task.CompletedTask;
+            while (!ct.IsCancellationRequested)
+            {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var tickers = (await _tickerService.GetTickers(1, 10)).Results;
+                    Random rnd = new Random();
+                    var ticker = tickers[rnd.Next(1, 10)];
+                    var rndPrice = rnd.Next(-5, 5);
+                    var bid = rnd.Next(0, 2);
+                    //_logger.LogInformation($"{ticker.Symbol}:{ticker.Price + rndPrice}");
+
+                    if (bid == 0)
+                        await _tradingService.Bid(_userName, ticker.Symbol, ticker.Price + rndPrice, rnd.Next(1, 10));
+                    else
+                        await _tradingService.Ask(_userName, ticker.Symbol, ticker.Price + rndPrice, rnd.Next(1, 10));
+                }
+                await Task.Delay(100, ct);
+            }
+
         }
     }
 }
