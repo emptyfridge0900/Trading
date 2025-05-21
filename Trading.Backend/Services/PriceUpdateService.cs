@@ -32,7 +32,6 @@ namespace Trading.Backend.Services
             {
                 try
                 {
-                    //_tickerService.UpdatePrices();
                     var tickers= (await _tickerService.GetTickers(1, 10)).Results;
                     foreach (var ticker in tickers)
                     {

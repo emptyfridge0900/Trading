@@ -8,25 +8,25 @@ namespace Trading.Backend.Services
 {
     public class TickerService:ITickerService
     {
-        private Random _random;
         private readonly IServiceScopeFactory scopeFactory;
         private readonly ILogger<TickerService> _logger;
+        private readonly List<Ticker> _tickerList;
         Store _store;
         public TickerService(IServiceScopeFactory factory, ILogger<TickerService> logger, Store store)
         {
             scopeFactory = factory;
-            _random = new Random();
             _logger = logger;
             _store = store;
+            using var scope = scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
+            _tickerList = db.Tickers.ToList();
         }
 
         public async Task<PaginatedResult<Ticker>> GetTickers(int pageNum, int pageSize)
         {
-            using var scope = scopeFactory.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
-
-            var totalCount = db.Tickers.Count();
-            var tickers = db.Tickers
+            var Tickers = _tickerList.AsQueryable();
+            var totalCount = Tickers.Count();
+            var tickers = Tickers
                 .Skip((pageNum - 1) * pageSize)
                 .Take(pageSize);
 
@@ -46,9 +46,7 @@ namespace Trading.Backend.Services
         public async Task<List<Order>> GetOrders(string tickerName, int numOfRow)
         {
             List<Order> orders = new List<Order>();
-            using var scope = scopeFactory.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
-            var ticker = await db.Tickers.FirstOrDefaultAsync(t => t.Symbol.Equals(tickerName, StringComparison.OrdinalIgnoreCase));
+            var ticker = await _tickerList.AsQueryable().FirstOrDefaultAsync(t => t.Symbol.Equals(tickerName, StringComparison.OrdinalIgnoreCase));
 
             if (_store.Stocks.ContainsKey(ticker.Symbol))
             {
