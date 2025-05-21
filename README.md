@@ -2,9 +2,14 @@
 
 
 ## Run
-In the root, run dotnet run command 
+In the root, run dotnet run command  
+<br>
+Back-end
 ```bash
 dotnet run --project .\Trading.Backend\Trading.Backend.csproj  
+```
+Front-end
+```bash
 dotnet run --project .\Trading.WPFClient\Trading.WPFClient.csproj
 ```
 
