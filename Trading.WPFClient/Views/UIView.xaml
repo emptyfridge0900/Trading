@@ -21,7 +21,7 @@
 
         <Menu DockPanel.Dock="Top" Grid.Row="0">
             <MenuItem Header="_Menu">
-                <MenuItem Header="_OrderBook">
+                <MenuItem Header="_OrderBook" IsEnabled="{Binding IsOrderBookAvailable}">
                     <Behaviors:Interaction.Triggers>
                         <Behaviors:EventTrigger EventName="Click">
                             <Behaviors:InvokeCommandAction Command="{Binding OpenOrder}" PassEventArgsToCommand="True"/>

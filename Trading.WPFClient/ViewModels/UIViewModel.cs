@@ -45,6 +45,7 @@ namespace Trading.WPFClient.ViewModels
                 _ticker = value;
                 Symbol = value.Symbol;
                 OnPropertyChanged();
+                IsOrderBookAvailable = true;
             }
         }
         static class NativeMethods
@@ -100,7 +101,16 @@ namespace Trading.WPFClient.ViewModels
             }
         }
 
-
+        private bool _isOrderBookAvailable;
+        public bool IsOrderBookAvailable
+        {
+            get=> _isOrderBookAvailable;
+            set
+            {
+                _isOrderBookAvailable = value;
+                OnPropertyChanged();
+            }
+        }
         public UIViewModel(Window mainWinow)
         {
             Name = JwtGen.GenerateName();
