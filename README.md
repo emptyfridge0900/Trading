@@ -8,6 +8,48 @@ dotnet run --project .\Trading.Backend\Trading.Backend.csproj
 dotnet run --project .\Trading.WPFClient\Trading.WPFClient.csproj
 ```
 
+## Structure
+### Back-end
+#### Ticker Hub
+
+#### Trade Hub
+SignalR hubs function similarly to controllers in a traditional Web API. Business logic is delegated to the services.
+
+#### Ticker Service
+Updates order status to all subscribers once per second.
+
+#### Trading Service
+Responsible for handling bids and asks.
+
+#### User Service
+Creates a new user whenever a new UI connects to the server.
+
+#### Data Generator
+Handles data seeding and scalping.
+It places bids or asks every 100 milliseconds.
+```
+⚠️ If you don't want it to generate data, go to DataProducer and comment out the line:
+await ScalpingTrade(ct) (line 44)
+```
+<br>
+
+### Common
+Contains shared models used by both the back-end and front-end.
+
+<br>
+
+### Front-end
+#### Main UI
+Displays the ticker list and order entry page.
+
+#### Order Book
+Shows real-time bid and ask levels.
+
+#### Trade History
+Displays the history of trades for the selected ticker.
+
+<br>
+
 ## Tool Selection
 ### 1. WPF
 I've heard that WinForms is much easier compared to WPF. However, I chose WPF for this project. I had some brief experience with it before, and I wanted to challenge myself and revisit what I had learned. Now that I’ve completed the project, I think choosing WPF might have been a mistake — there was so much to learn: MVVM, dispatcher usage, pub/sub patterns, and more.
