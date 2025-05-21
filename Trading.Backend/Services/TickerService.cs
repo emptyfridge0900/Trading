@@ -1,4 +1,5 @@
-﻿using Trading.Backend.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Trading.Backend.Interfaces;
 using Trading.Backend.Models;
 using Trading.Backend.Persistance;
 using Trading.Common.Models;
@@ -19,7 +20,7 @@ namespace Trading.Backend.Services
             _store = store;
         }
 
-        public PaginatedResult<Ticker> GetTickers(int pageNum, int pageSize)
+        public async Task<PaginatedResult<Ticker>> GetTickers(int pageNum, int pageSize)
         {
             using var scope = scopeFactory.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
@@ -31,7 +32,7 @@ namespace Trading.Backend.Services
 
             var result = new PaginatedResult<Ticker>
             {
-                Results = tickers.ToList(),
+                Results = await tickers.ToListAsync(),
                 PageNum = pageNum,
                 PageSize = pageSize,
 
@@ -42,12 +43,12 @@ namespace Trading.Backend.Services
             return result;
         }
 
-        public List<Order> GetOrders(string tickerName, int numOfRow)
+        public async Task<List<Order>> GetOrders(string tickerName, int numOfRow)
         {
             List<Order> orders = new List<Order>();
             using var scope = scopeFactory.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TradingDbContext>();
-            var ticker = db.Tickers.FirstOrDefault(t => t.Symbol.Equals(tickerName, StringComparison.OrdinalIgnoreCase));
+            var ticker = await db.Tickers.FirstOrDefaultAsync(t => t.Symbol.Equals(tickerName, StringComparison.OrdinalIgnoreCase));
 
             if (_store.Stocks.ContainsKey(ticker.Symbol))
             {
@@ -77,7 +78,5 @@ namespace Trading.Backend.Services
         }
         
 
-
-        
     }
 }

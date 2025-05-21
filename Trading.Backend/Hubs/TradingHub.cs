@@ -25,7 +25,7 @@ namespace Trading.Backend.Hubs
         public async Task SendTradingHistory()
         {
             _logger.LogInformation("Context.UserIdentifier:" + Context.UserIdentifier);
-            var records = _service.GetTradingRecords(Context.UserIdentifier);
+            var records = await _service.GetTradingRecords(Context.UserIdentifier);
             await Clients.User(Context.UserIdentifier).ReceiveRecords(records);
         }
 
@@ -35,11 +35,11 @@ namespace Trading.Backend.Hubs
 
             if(side == "Bid")
             {
-                _service.Bid(Context.UserIdentifier, symbol, price, quantity);
+                await _service.Bid(Context.UserIdentifier, symbol, price, quantity);
             }
             else
             {
-                _service.Ask(Context.UserIdentifier, symbol, price, quantity);
+                await _service.Ask(Context.UserIdentifier, symbol, price, quantity);
             }
 
             var record = new TradeRecord
@@ -51,7 +51,7 @@ namespace Trading.Backend.Hubs
                 Quantity = quantity,
                 UserId = Context.UserIdentifier,
             };
-            _service.AddRecord(record);
+            await _service.AddRecord(record);
         }
     }
 }

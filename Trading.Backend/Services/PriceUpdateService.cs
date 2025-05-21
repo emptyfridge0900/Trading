@@ -12,7 +12,7 @@ namespace Trading.Backend.Services
         private readonly IHubContext<TickerHub,ITicker> _hubContext;
         private readonly ITickerService _tickerService;
         private readonly ILogger<PriceUpdateService> _logger;
-        private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(2);
+        private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(1);
 
         public PriceUpdateService(
             IHubContext<TickerHub,ITicker> hubContext,
@@ -33,10 +33,10 @@ namespace Trading.Backend.Services
                 try
                 {
                     //_tickerService.UpdatePrices();
-                    var tickers= _tickerService.GetTickers(1, 10).Results;
+                    var tickers= (await _tickerService.GetTickers(1, 10)).Results;
                     foreach (var ticker in tickers)
                     {
-                        await _hubContext.Clients.Group(ticker.Symbol).ReceiveOrderBook(_tickerService.GetOrders(ticker.Symbol,10),ct);
+                        await _hubContext.Clients.Group(ticker.Symbol).ReceiveOrderBook(await _tickerService.GetOrders(ticker.Symbol,10),ct);
                         //_logger.LogInformation($"Sent ticker {ticker.Symbol}");
                     }
                     

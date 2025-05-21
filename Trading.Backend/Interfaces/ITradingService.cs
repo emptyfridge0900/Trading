@@ -9,10 +9,10 @@ namespace Trading.Backend.Interfaces
         /// </summary>
         /// <param name="userId">UserId in here is user's name and at the same time, it's SignalR useridentifier</param>
         /// <returns></returns>
-        List<TradeRecord> GetTradingRecords(string userId);
-        void AddRecord(TradeRecord record);
-        void Bid(string userId, string symbol, float price, int quantity);
-        void Ask(string userId, string symbol, float price, int quantity);
+        Task<List<TradeRecord>> GetTradingRecords(string userId);
+        Task AddRecord(TradeRecord record);
+        Task Bid(string userId, string symbol, float price, int quantity);
+        Task Ask(string userId, string symbol, float price, int quantity);
 
     }
 }

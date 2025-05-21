@@ -25,7 +25,7 @@ namespace Trading.Backend.Services
             _hubContext = hubContext;
 
         }
-        public List<TradeRecord> GetTradingRecords(string userId)
+        public async Task<List<TradeRecord>> GetTradingRecords(string userId)
         {
             using var db = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<TradingDbContext>();
             var records = db.Records.Where(r => r.UserId == userId);
@@ -35,15 +35,15 @@ namespace Trading.Backend.Services
             
         }
 
-        public void AddRecord(TradeRecord record)
+        public async Task AddRecord(TradeRecord record)
         {
             using var db = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<TradingDbContext>();
             //assume that all the user inputs are valid
-            db.Records.Add(record);
+            await db.Records.AddAsync(record);
             
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
-        public void Bid(string userId, string symbol, float price, int quantity)
+        public async Task Bid(string userId, string symbol, float price, int quantity)
         {
             if (_store.Stocks.ContainsKey(symbol))
             {
@@ -61,7 +61,7 @@ namespace Trading.Backend.Services
                         var asks = i.Take(quantity, out var unredeemed);
                         foreach (var item in asks)
                         {
-                            _hubContext.Clients.User(item.Asker).ReceiveRecords(GetTradingRecords(item.Asker));
+                            await _hubContext.Clients.User(item.Asker).ReceiveRecords(await GetTradingRecords(item.Asker));
                         }
                         s.UpdateCurrentPrice();
                         quantity = unredeemed;
@@ -93,7 +93,7 @@ namespace Trading.Backend.Services
 
             }
         }
-        public void Ask(string userId, string symbol, float price, int quantity)
+        public async Task Ask(string userId, string symbol, float price, int quantity)
         {
             if (_store.Stocks.ContainsKey(symbol))
             {
@@ -107,7 +107,7 @@ namespace Trading.Backend.Services
                         var bids = i.Take(quantity, out var unredeemed);
                         foreach (var item in bids)
                         {
-                            _hubContext.Clients.User(item.Bidder).ReceiveRecords(GetTradingRecords(item.Bidder));
+                            await _hubContext.Clients.User(item.Bidder).ReceiveRecords(await GetTradingRecords(item.Bidder));
                         }
                         s.UpdateCurrentPrice();
                         quantity = unredeemed;

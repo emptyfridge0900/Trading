@@ -24,7 +24,7 @@ namespace Trading.Backend.Hubs
         }
 
         public async Task SendTickerList(int pageNum, int pageSize)
-            => await Clients.Caller.ReceiveTickerList(_tickerService.GetTickers(pageNum, pageSize));
+            => await Clients.Caller.ReceiveTickerList(await _tickerService.GetTickers(pageNum, pageSize));
         
         public async Task JoinGroup(string tickerName)
          => await Groups.AddToGroupAsync(Context.ConnectionId, tickerName);
