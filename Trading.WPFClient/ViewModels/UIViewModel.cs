@@ -113,7 +113,7 @@ namespace Trading.WPFClient.ViewModels
         {
             _tickers = new ObservableCollection<Ticker>();
             _ticker = new Ticker();
-            _symbol = "TSLA";
+            _symbol = "";
             Name = JwtGen.GenerateName();
             Jwt = JwtGen.GenerateJwtToken(Name);
             _hubConnection = new HubConnectionBuilder()
