@@ -8,9 +8,9 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <ListView ItemsSource="{Binding Records}" 
-                MaxHeight="450" 
-                MaxWidth="400" 
-                MinWidth="250">
+                HorizontalContentAlignment="Center"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Time"  DisplayMemberBinding="{Binding Time, StringFormat=s}" />

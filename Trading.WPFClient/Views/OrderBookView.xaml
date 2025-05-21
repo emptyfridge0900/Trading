@@ -30,10 +30,10 @@
         <!-- Order Book ListView -->
         <ListView Grid.Row="1" 
                   ItemsSource="{Binding Orders}" 
-                  MaxHeight="400" 
-                  MaxWidth="300" 
-                  MinWidth="250"
-                  HorizontalAlignment="Center">
+                  HorizontalContentAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
+
             <ListView.Resources>
                 <Style TargetType="ListView">
                     <Setter Property="BorderBrush" Value="#CCCCCC"/>
